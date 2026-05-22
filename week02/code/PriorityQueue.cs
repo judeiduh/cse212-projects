@@ -3,7 +3,7 @@
     private List<PriorityItem> _queue = new();
 
     /// <summary>
-    /// Add a new value to the queue with an associated priority.  The
+    /// Add a new value to the queue with an associated priority. The
     /// node is always added to the back of the queue regardless of 
     /// the priority.
     /// </summary>
@@ -15,23 +15,38 @@
         _queue.Add(newNode);
     }
 
+    /// <summary>
+    /// Remove and return the value with the highest priority.
+    /// If multiple items have the same priority, the item
+    /// closest to the front of the queue is removed first (FIFO).
+    /// </summary>
     public string Dequeue()
     {
-        if (_queue.Count == 0) // Verify the queue is not empty
+        // Verify queue is not empty
+        if (_queue.Count == 0)
         {
             throw new InvalidOperationException("The queue is empty.");
         }
 
-        // Find the index of the item with the highest priority to remove
-        var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
+        // Start assuming first item has highest priority
+        int highPriorityIndex = 0;
+
+        // Search entire queue
+        for (int index = 1; index < _queue.Count; index++)
         {
-            if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
+            // Use > only to preserve FIFO behavior
+            if (_queue[index].Priority > _queue[highPriorityIndex].Priority)
+            {
                 highPriorityIndex = index;
+            }
         }
 
-        // Remove and return the item with the highest priority
-        var value = _queue[highPriorityIndex].Value;
+        // Save value before removal
+        string value = _queue[highPriorityIndex].Value;
+
+        // Remove item from queue
+        _queue.RemoveAt(highPriorityIndex);
+
         return value;
     }
 
